@@ -7,28 +7,18 @@ phases:
       - "curl -s -qL -o terraform.zip https://releases.hashicorp.com/terraform/0.12.24/terraform_0.12.24_linux_amd64.zip"
       - "unzip -o terraform.zip"
       - cd "$CODEBUILD_SRC_DIR" 
+      - pwd
       - which make
       - cd infra
       # Check
       - terraform fmt -check -diff -recursive
   build:
     commands:
-      - |
-        terraform init \
-          -input=false \
-          -backend=true \
-          -backend-config="region=eu-west-3" \
-          -backend-config="bucket=gitops-terraform-1234" \
-          -backend-config="key=terraform"
+      - echo Build start on `date`
+      - terraform init -input=false -backend=true -backend-config="region=eu-west-3" -backend-config="bucket=gitops-terraform-1234" -backend-config="key=terraform"
       - cd infra
-      - |
-        terraform plan \
-          -var "ssh_key_name=gitops-terraform" \
-          -out=terraform.plan
-      - |
-        terraform apply \
-          -auto-approve \
-          terraform.plan
+      - terraform plan -var "ssh_key_name=gitops-terraform" -out=terraform.plan
+      - terraform apply -auto-approve terraform.plan
   post_build:
     commands:
       - echo Build completed on `date`
