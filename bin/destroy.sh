@@ -12,9 +12,18 @@ log() {
     echo -e "\033[1;4;32m$1\033[0m \033[1;33m$2\033[0m"
 }
 
+# echo $1 in underline magenta then $2 in cyan
+err() {
+    echo -e "\033[1;4;35m$1\033[0m \033[1;36m$2\033[0m" >&2
+}
+
+err delete 'total destruction in 5 seconds ...'
+err warn 'press ctrl-c to abort ...'
+sleep 5
+
 if [[ -f $SSH_KEY.pub ]]
 then
-    log delete "$SSH_KEY.pem + $SSH_KEY.pub keys"
+    log delete "$SSH_KEY.pem + $SSH_KEY.pub local keys"
     rm --force $SSH_KEY.pem
     rm --force $SSH_KEY.pub
 fi
@@ -31,4 +40,7 @@ then
         --key-name $SSH_KEY
 fi
 
-# terraform destroy -auto-approve
+log terraform destroy
+terraform destroy \
+    -var "ssh_key_name=$SSH_KEY" \
+    -auto-approve

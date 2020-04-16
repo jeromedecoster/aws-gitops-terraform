@@ -1,0 +1,9 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - which make
+      - cd infra
+      # Check
+      - terraform fmt -check -diff -recursive

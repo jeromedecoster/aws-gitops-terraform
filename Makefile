@@ -16,8 +16,15 @@ apply: validate # terraform plan then apply with auto approve (invoke first vali
 	bin/apply.sh
 
 connect:
-	cd infra; \
-	ssh -i "gitops-terraform.pem" ec2-user@ec2-35-180-116-216.eu-west-3.compute.amazonaws.com
+	bin/connect.sh
+	# cd infra; \
+	# ssh -i "gitops-terraform.pem" ec2-user@ec2-35-180-116-216.eu-west-3.compute.amazonaws.com
 
 destroy: # destroy everything with auto approve
 	bin/destroy.sh
+
+local-init:
+	bin/local-init.sh
+
+local-apply:
+	bin/local-apply.sh
