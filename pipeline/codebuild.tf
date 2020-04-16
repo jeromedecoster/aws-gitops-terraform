@@ -104,17 +104,17 @@ resource aws_iam_role codebuild_role {
 # attach 3 policies
 #
 
-resource aws_iam_role_policy_attachment codebuild_admin_attachment {
-  role       = aws_iam_role.codebuild_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AWSCodeBuildAdminAccess"
-}
+# resource aws_iam_role_policy_attachment codebuild_admin_attachment {
+#   role       = aws_iam_role.codebuild_role.name
+#   policy_arn = "arn:aws:iam::aws:policy/AWSCodeBuildAdminAccess"
+# }
 
-resource aws_iam_role_policy_attachment cloudwatch_logs_full_attachment {
-  role       = aws_iam_role.codebuild_role.name
-  policy_arn = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
-}
+# resource aws_iam_role_policy_attachment cloudwatch_logs_full_attachment {
+#   role       = aws_iam_role.codebuild_role.name
+#   policy_arn = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
+# }
 
-resource aws_iam_role_policy_attachment amazon_s3_full_attachment {
+resource aws_iam_role_policy_attachment admin_attachment {
   role       = aws_iam_role.codebuild_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
