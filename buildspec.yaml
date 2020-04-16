@@ -15,10 +15,11 @@ phases:
   build:
     commands:
       - echo Build start on `date`
-      - terraform init -input=false -backend=true -backend-config="region=eu-west-3" -backend-config="bucket=gitops-terraform-1234" -backend-config="key=terraform"
-      - cd infra
-      - terraform plan -var "ssh_key_name=gitops-terraform" -out=terraform.plan
-      - terraform apply -auto-approve terraform.plan
+      - terraform init -input=false -backend=true -backend-config="region=eu-west-3" -backend-config="bucket=gitops-terraform-1234" -backend-config="key=terraform" -no-color
+      - ls -la
+      # - cd infra
+      # - terraform plan -var "ssh_key_name=gitops-terraform" -out=terraform.plan
+      # - terraform apply -auto-approve terraform.plan
   post_build:
     commands:
       - echo Build completed on `date`
