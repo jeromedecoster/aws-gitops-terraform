@@ -17,6 +17,23 @@ phases:
       - echo Build start on `date`
       - terraform init -input=false -backend=true -backend-config="region=eu-west-3" -backend-config="bucket=gitops-terraform-1234" -backend-config="key=terraform" -no-color
       - terraform output
+      - |
+        NAME=$(terraform output | grep ^project_name | sed 's|.*= ||')
+        echo "NAME:$NAME"
+        if [[ -n "$NAME" ]]; then
+          ASG=$(aws autoscaling describe-auto-scaling-groups \
+            --auto-scaling-group-names $NAME \
+            --query "AutoScalingGroups[?AutoScalingGroupName == '$NAME']" \
+            --output text)
+          echo "ASG:$ASG"
+          if [[ -n "$ASG" ]]; then
+            aws autoscaling delete-auto-scaling-group \
+              --auto-scaling-group-name $NAME \
+              --force-delete
+            echo sleeping 30 seconds...
+            sleep 30
+          fi
+        fi
       - terraform plan -var "ssh_key_name=gitops-terraform" -out=terraform.plan -no-color
       - |
         terraform apply \
