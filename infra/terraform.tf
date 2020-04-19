@@ -36,6 +36,10 @@ module network {
 # outputs
 #
 
+output project_name {
+  value = local.project_name
+}
+
 # output public_dns {
 #   value = module.network.public_dns
 # }
