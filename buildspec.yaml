@@ -29,15 +29,15 @@ phases:
             if [[ -n "$ID" ]]; then
                 echo "$ID" | while read line; do aws ec2 terminate-instances --instance-ids $line; done
             fi
-            echo "sleep 5 seonds..."
+            echo "terminate-instances. sleep 5 seonds..."
             sleep 5
             aws autoscaling delete-auto-scaling-group --auto-scaling-group-name $NAME --force-delete
-            echo "sleep 10 seonds..."
+            echo "delete-auto-scaling-group. sleep 10 seonds..."
             sleep 10
-            until [[ -n $(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names $NAME --query "AutoScalingGroups[?AutoScalingGroupName == '$NAME']" --output text) ]]; do
+            while [[ -n $(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names $NAME --query "AutoScalingGroups[?AutoScalingGroupName == '$NAME']" --output text) ]]; do
                 aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names $NAME --query "AutoScalingGroups[?AutoScalingGroupName == '$NAME'].[Status]" --output text
-                echo "sleep 10 seonds..."
-                sleep 10
+                echo "waiting auto-scaling-group destruction. sleep 20 seonds..."
+                sleep 20
             done
         fi
       - terraform plan -var "ssh_key_name=gitops-terraform" -out=terraform.plan -no-color
