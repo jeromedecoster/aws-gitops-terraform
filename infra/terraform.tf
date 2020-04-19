@@ -36,10 +36,38 @@ module network {
 # outputs
 #
 
-output public_dns {
-  value = module.network.public_dns
-}
+# output public_dns {
+#   value = module.network.public_dns
+# }
 
-output public_ip {
-  value = module.network.public_ip
-}
+# output public_ip {
+#   value = module.network.public_ip
+# }
+
+# tests
+
+# resource "aws_default_vpc" "default_vpc" {
+# }
+
+# output default_vpc {
+#   value = aws_default_vpc.default_vpc.id
+# }
+
+# data "aws_availability_zones" "available" {
+#   state = "available"
+# }
+
+# output default_availability_zones {
+#   value = data.aws_availability_zones.available.names
+# }
+
+# output proj {
+#   value = local.project_name
+# }
+# data aws_subnet_ids subnet_ids {
+#   vpc_id = aws_default_vpc.default_vpc.id
+# }
+
+# output default_vpc_subnets {
+#   value = data.aws_subnet_ids.subnet_ids.ids
+# }
