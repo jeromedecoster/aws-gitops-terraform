@@ -48,6 +48,10 @@ resource aws_launch_configuration launch_configuration {
   security_groups = [aws_security_group.security_group.id]
 
   user_data = file("${path.module}/user-data.sh")
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource aws_autoscaling_group default {
@@ -64,6 +68,10 @@ resource aws_autoscaling_group default {
   vpc_zone_identifier = data.aws_subnet_ids.subnet_ids.ids
   #["subnet-43dbe42a", "subnet-ee46dda3", "subnet-f3d98f88"]
   #[data.aws_subnet_ids.subnet_ids.ids]
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # https://www.terraform.io/docs/providers/aws/r/lb.html
