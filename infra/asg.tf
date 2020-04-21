@@ -88,5 +88,5 @@ resource aws_lb_listener http {
 }
 
 output lb_dns {
-  value       = aws_lb.lb.dns_name 
+  value = aws_lb.lb.dns_name
 }
