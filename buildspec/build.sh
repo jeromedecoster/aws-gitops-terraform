@@ -2,9 +2,9 @@
 echo ······ source settings.sh ······
 cd $CODEBUILD_SRC_DIR
 source settings.sh
-echo >>> AWS_REGION=$AWS_REGION
-echo >>> S3_BUCKET=$S3_BUCKET
-echo >>> SSH_KEY=$SSH_KEY
+echo ······ AWS_REGION=$AWS_REGION ······
+echo ······ S3_BUCKET=$S3_BUCKET ······
+echo ······ SSH_KEY=$SSH_KEY ······
 
 echo ······ terraform init ······
 cd infra
