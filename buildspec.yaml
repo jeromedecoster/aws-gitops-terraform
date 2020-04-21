@@ -4,7 +4,7 @@ phases:
   pre_build:
     commands:
       - echo pre_build start on `date`
-      - bash builspec/pre-build.sh
+      - buildspec/pre-build.sh
   build:
     commands:
       - echo Build start on `date`
