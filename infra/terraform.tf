@@ -1,3 +1,4 @@
+# variable project_name {}
 variable ssh_key_name {}
 
 locals {
@@ -26,11 +27,11 @@ resource random_id random {
 # modules
 #
 
-module network {
-  source       = "./network"
-  project_name = local.project_name
-  ssh_key_name = var.ssh_key_name
-}
+# module network {
+#   source       = "./network"
+#   project_name = local.project_name
+#   ssh_key_name = var.ssh_key_name
+# }
 
 #
 # outputs

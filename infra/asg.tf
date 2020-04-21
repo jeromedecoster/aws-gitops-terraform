@@ -1,47 +1,26 @@
-# get id of the default VPC in the current region
-# with `aws_default_vpc.default.id`
-resource aws_default_vpc default_vpc {
-}
+resource aws_security_group security_group {
+  name        = local.project_name
+  description = "Allow All"
 
-output default_vpc_id {
-  value = aws_default_vpc.default_vpc.id
-}
+  # inbound rule: all traffic, all protocol, all ranges  
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
-# get names of the available AZ in current region
-# with `data.aws_availability_zones.availability_zones.names`
-data aws_availability_zones availability_zones {
-  state = "available"
-}
-
-output default_vpc_az {
-  value = data.aws_availability_zones.availability_zones.names
-}
-
-# get the subnets ids of the default VPC
-# with `data.aws_subnet_ids.subnet_ids.ids`
-data aws_subnet_ids subnet_ids {
-  vpc_id = aws_default_vpc.default_vpc.id
-}
-
-output default_vpc_subnets {
-  value = data.aws_subnet_ids.subnet_ids.ids
-}
-
-# get the AMI id of the latest "Amazon Linux 2 AMI (HVM)" (Free tier eligible)
-# with `data.aws_ami.latest_amazon_linux.id`
-data aws_ami latest_amazon_linux {
-  owners      = ["amazon"]
-  most_recent = true
-  filter {
-    name   = "name"
-    values = ["amzn2-ami-hvm-*-x86_64-*"]
+  # outbound rule: all traffic, all protocol, all ranges  
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
 
-
-
 resource aws_launch_configuration launch_configuration {
-  name          = var.project_name
+  name          = local.project_name
   image_id      = data.aws_ami.latest_amazon_linux.id
   instance_type = "t2.micro"
 
@@ -55,7 +34,7 @@ resource aws_launch_configuration launch_configuration {
 }
 
 resource aws_autoscaling_group default {
-  name = var.project_name
+  name = local.project_name
 
   max_size         = 3
   min_size         = 1
@@ -66,8 +45,6 @@ resource aws_autoscaling_group default {
   target_group_arns = [aws_lb_target_group.target_group.arn]
 
   vpc_zone_identifier = data.aws_subnet_ids.subnet_ids.ids
-  #["subnet-43dbe42a", "subnet-ee46dda3", "subnet-f3d98f88"]
-  #[data.aws_subnet_ids.subnet_ids.ids]
 
   lifecycle {
     create_before_destroy = true
@@ -76,16 +53,15 @@ resource aws_autoscaling_group default {
 
 # https://www.terraform.io/docs/providers/aws/r/lb.html
 resource aws_lb lb {
-  name               = var.project_name
+  name               = local.project_name
   load_balancer_type = "application"
 
-  #   internal        = false
   security_groups = [aws_security_group.security_group.id]
   subnets         = data.aws_subnet_ids.subnet_ids.ids
 }
 
 resource aws_lb_target_group target_group {
-  name     = "${var.project_name}-tg"
+  name     = "${local.project_name}-tg"
   port     = 80
   protocol = "HTTP"
   vpc_id   = aws_default_vpc.default_vpc.id
@@ -109,4 +85,8 @@ resource aws_lb_listener http {
     target_group_arn = aws_lb_target_group.target_group.arn
     type             = "forward"
   }
+}
+
+output lb_dns {
+  value       = aws_lb.lb.dns_name 
 }
