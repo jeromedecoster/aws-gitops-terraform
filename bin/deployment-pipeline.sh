@@ -10,8 +10,9 @@ cd "$bin/../deployment-pipeline"
 
 usage() {
     under usage deployment-pipeline.sh [command]    
-    under commands 'init     create terraform.tfvars + terraform init
-         apply    terraform plan + terraform apply'
+    under commands 'init       create terraform.tfvars + terraform init the deployment pipeline
+         apply      terraform plan + terraform apply the deployment pipeline
+         destroy    terraform destroy the deployment pipeline'
 
 if [[ -f terraform.tfvars ]]
 then
@@ -23,6 +24,7 @@ fi
 
 
 init() {
+    # terraform init
     log init terraform
     terraform init
     
@@ -48,10 +50,12 @@ apply() {
     then err abort github_token not defined; exit
     fi
 
+    # terraform plan
     log terraform plan
     terraform plan \
     -out=terraform.plan && \
 
+    # terraform apply
     log terraform apply && \
     terraform apply \
         -auto-approve \
@@ -59,8 +63,16 @@ apply() {
 }
 
 
+destroy() {
+    # terraform destroy
+    log terraform destroy
+    terraform destroy \
+        -auto-approve
+}
+
 case $1 in
-     init) init ;;
-    apply) apply ;;
-        *) usage ;;
+       init) init ;;
+      apply) apply ;;
+    destroy) destroy ;;
+          *) usage ;;
 esac

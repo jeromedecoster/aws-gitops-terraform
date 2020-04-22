@@ -17,21 +17,15 @@ cd "$bin/../infra"
 
 usage() {
     under usage infra.sh [command]    
-#     under commands 'init     create terraform.tfvars + terraform init
-#          apply    terraform plan + terraform apply'
-
-# if [[ -f terraform.tfvars ]]
-# then
-#     under terraform.tfvars 
-#     cat terraform.tfvars
-#     echo
-# fi
+    under commands 'init       terraform init the project infrastructure
+         apply      terraform plan + apply the project infrastructure
+         destroy    terraform destroy the project infrastructure'
 }
 
 
 init() {
-    log init terraform
     # terraform init
+    log init terraform
     terraform init \
         -input=false \
         -backend=true \
@@ -39,47 +33,35 @@ init() {
         -backend-config="bucket=$S3_BUCKET" \
         -backend-config="key=terraform" \
         -reconfigure
-    
-    # if [[ ! -f terraform.tfvars ]]
-    # then
-    #     log create terraform.tfvars file
-    #     # copy `terraform.sample.tfvars` as `terraform.tfvars` without overwriting
-    #     cp --no-clobber terraform.sample.tfvars terraform.tfvars
-    #     err warn you must define $(realpath terraform.tfvars)
-    #     under terraform.tfvars ''
-    #     cat terraform.tfvars
-    #     echo
-    # fi
 }
 
 
 apply() {
-    # if [[ ! -f terraform.tfvars ]]
-    # then err abort terraform.tfvars not found; exit
-    # fi
-    
-    # if [[ $(grep token terraform.tfvars | sed 's|.*= "||' | wc -m) -lt 10 ]]
-    # then err abort github_token not defined; exit
-    # fi
-
+    # terraform plan
     log terraform plan
     terraform plan \
     -var "ssh_key_name=$SSH_KEY" \
     -out=terraform.plan && \
 
+    # terraform apply
     log terraform apply && \
     terraform apply \
         -auto-approve \
         terraform.plan
-    # log terraform apply && \
-    # terraform apply \
-    #     -auto-approve \
-    #     terraform.plan
 }
 
 
+destroy() {
+    # terraform destroy
+    log terraform destroy
+    terraform destroy \
+        -var "ssh_key_name=$SSH_KEY" \
+        -auto-approve
+}
+
 case $1 in
-     init) init ;;
-    apply) apply ;;
-        *) usage ;;
+       init) init ;;
+      apply) apply ;;
+    destroy) destroy ;;
+          *) usage ;;
 esac

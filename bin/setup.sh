@@ -8,7 +8,7 @@ source "$bin/common.sh"
 cd "$bin/.."
 
 usage() {
-    under usage setup [command]    
+    under usage setup.sh [command]    
     under commands 'create     create the settings.sh files + the AWS S3 bucket
          delete     delete the settings.sh files + the AWS S3 bucket'
 
@@ -19,6 +19,7 @@ then
     cat settings.sh
 fi
 }
+
 
 # create settings.sh file + S3 bucket
 create() {
@@ -39,6 +40,7 @@ EOF
         err abort settings.sh already exisits
     fi
 }
+
 
 # delete settings.sh file + S3 bucket
 delete() {
