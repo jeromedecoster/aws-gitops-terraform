@@ -10,4 +10,5 @@ tfplan
 *.tfstate.backup
 *.pem
 *.pub
+settings.sh
 IGNORE
